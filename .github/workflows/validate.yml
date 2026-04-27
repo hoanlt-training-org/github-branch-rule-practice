@@ -1,0 +1,27 @@
+name: Validate repository
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  validate-repository:
+    name: validate-repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Check README exists
+        run: test -f README.md
+
+      - name: Check README is not empty
+        run: test -s README.md
+
+      - name: Check CODEOWNERS exists
+        run: test -f .github/CODEOWNERS
