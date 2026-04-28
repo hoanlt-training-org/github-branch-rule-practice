@@ -1,0 +1,33 @@
+name: Salesforce CI Mock
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  salesforce-structure-check:
+    name: salesforce-structure-check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Check sfdx-project.json exists
+        run: test -f sfdx-project.json
+
+      - name: Check force-app exists
+        run: test -d force-app
+
+      - name: Check Apex class exists
+        run: test -f force-app/main/default/classes/HelloWorld.cls
+
+      - name: Check Apex test exists
+        run: test -f force-app/main/default/classes/HelloWorldTest.cls
+
+      - name: Mock validation deploy
+        run: echo "Mock Salesforce validation deploy completed"
+
+      - name: Mock Apex test
+        run: echo "Mock Apex tests completed"

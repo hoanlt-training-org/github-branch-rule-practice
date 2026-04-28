@@ -1,0 +1,43 @@
+name: Salesforce Auto Deploy Mock
+
+on:
+  push:
+    branches:
+      - preuat
+      - uattest
+      - production
+
+jobs:
+  auto-deploy:
+    name: auto-deploy-${{ github.ref_name }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Check Salesforce project structure
+        run: |
+          test -f sfdx-project.json
+          test -d force-app
+
+      - name: Detect target environment
+        run: |
+          echo "Current branch: ${{ github.ref_name }}"
+
+          if [ "${{ github.ref_name }}" = "preuat" ]; then
+            echo "Target Salesforce Org: PREUAT"
+          elif [ "${{ github.ref_name }}" = "uattest" ]; then
+            echo "Target Salesforce Org: UATTEST"
+          elif [ "${{ github.ref_name }}" = "production" ]; then
+            echo "Target Salesforce Org: HONBAN"
+          else
+            echo "Unsupported branch"
+            exit 1
+          fi
+
+      - name: Mock Salesforce deploy
+        run: |
+          echo "Starting mock deploy to ${{ github.ref_name }}"
+          echo "sf project deploy start --source-dir force-app --target-org <${{ github.ref_name }}-org> --test-level RunLocalTests --wait 30"
+          echo "Mock deploy completed successfully"
